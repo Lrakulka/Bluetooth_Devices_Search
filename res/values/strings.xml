@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Bluetooth_Devices_Search</string>
+    <string name="butt_start_normal_search">Normal Bluetooth devices search</string>
+    <string name="butt_start_hard_search">Hard Bluetooth devises search</string>
+    <string name="connect_to_device">Connect to devices</string>
+    <string name="butt_stop_normal_search">Stop normal Bluetooth devices search</string>
+    <string name="butt_stop_hard_search">Stop hard Bluetooth devises search</string>
+    <string name="check_button">Hard core mode for Hard Bluetooth devises search</string>
+
+</resources>
