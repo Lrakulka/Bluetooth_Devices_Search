@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -32,7 +31,8 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 	private Handler hMessage;
 	private ListView list;
 	
-	public HardSearchBluetoothDevice(MainActivity context, ListView list, Handler hMessage) {
+	public HardSearchBluetoothDevice(MainActivity context, ListView list, 
+			Handler hMessage) {
 		blAdapter = BluetoothAdapter.getDefaultAdapter();
 		devices = new ArrayList<BluetoothDevice>();
 		devicesNames = new ArrayList<String>();
@@ -70,6 +70,11 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
             (new SearchiddenDevices(new Handler(){
     			public void handleMessage(android.os.Message msg) {
     				adapter.notifyDataSetChanged();
+    			}    			
+            }, //Bad decision for click on button from not main thread
+            new Handler(){
+    			public void handleMessage(android.os.Message msg) {
+    				HardSearchBluetoothDevice.this.context.onClickHardSearch(null);
     			}
             })).start();
         }
@@ -92,7 +97,7 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 		context.registerReceiver(discoveryFinishedReceiver, 
 				new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
 		// Don't forget to unregister during onDestroy
-		return blAdapter.startDiscovery();
+		return blAdapter.startDiscovery(); 
 	}
 	
 
@@ -103,14 +108,16 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 	        context.unregisterReceiver(discoveryFinishedReceiver);
 			blAdapter.cancelDiscovery();
 		}
+		
 	}
 	
 	class SearchiddenDevices extends Thread {
-		private Handler hAdapter;
+		private Handler hAdapter, hClose;
 		
-		public SearchiddenDevices(Handler hAdapter) {
+		public SearchiddenDevices(Handler hAdapter, Handler hClose) {
 			// TODO Auto-generated constructor stub
 			this.hAdapter = hAdapter;
+			this.hClose = hClose;
 		}
 		//Begin search from state2 and 3
 		public void run(){ //Stage2
@@ -127,9 +134,8 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 				// 50331368,728822305451518934665002 years
 				getBrutAllDevices((byte) 6, "");
 				if(!closeThread)
-					context.onClickHardSearch(null);
-			}
-			else context.onClickHardSearch(null);
+					hClose.sendEmptyMessage(0);
+			}else hClose.sendEmptyMessage(0);
 		}
 		
 		//Stage 3
@@ -193,4 +199,5 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 		// TODO Auto-generated method stub
 		return devices;
 	}
+
 }
