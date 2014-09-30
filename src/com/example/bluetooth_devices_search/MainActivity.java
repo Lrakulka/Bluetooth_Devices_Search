@@ -26,14 +26,14 @@ public class MainActivity extends Activity {
     @SuppressLint("HandlerLeak") @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        normalSearch = new SearchBluetoothDevices(this, ((ListView) findViewById(R.id.listView1)));
+        setContentView(R.layout.activity_main);        
     	hardSearch = new HardSearchBluetoothDevice(this, (ListView) findViewById(R.id.listView1), 
     			new Handler(){
 			public void handleMessage(android.os.Message msg){
 				((TextView) findViewById(R.id.textView2)).setText((String) msg.obj);
 			}
 		});
+    	normalSearch = new SearchBluetoothDevices(this, ((ListView) findViewById(R.id.listView1)));
         ((ListView) findViewById(R.id.listView1)).setOnItemClickListener(new OnItemClickListener() {
 
 			@Override

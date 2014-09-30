@@ -18,6 +18,7 @@ public class SearchBluetoothDevices implements FindBluetoothDevices{
 	private MainActivity mainActivity;
 	private ArrayList<String> devicesNames;
 	private ArrayAdapter<String> adapter;
+	private ListView list;
 	
 	SearchBluetoothDevices(MainActivity mainActivity, ListView list){
 		this.mainActivity = mainActivity;
@@ -26,7 +27,7 @@ public class SearchBluetoothDevices implements FindBluetoothDevices{
 		adapter = new ArrayAdapter<String>(mainActivity,
     			android.R.layout.simple_list_item_1, devicesNames);
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();		
-    	list.setAdapter(adapter);    	
+    	this.list = list;
 	}
 	
 	// Receiver for hook of founded devices
@@ -56,6 +57,8 @@ public class SearchBluetoothDevices implements FindBluetoothDevices{
     };
 	
 	public boolean find(){
+		if(list.getAdapter() == null || !list.getAdapter().equals(adapter))
+			list.setAdapter(adapter);   
 		devices.clear();
 		devicesNames.clear();
 		adapter.notifyDataSetChanged();

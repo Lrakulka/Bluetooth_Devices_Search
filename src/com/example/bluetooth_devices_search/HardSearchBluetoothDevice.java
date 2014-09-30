@@ -30,6 +30,7 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 	private final static String TAG = "HardSearchBluetoothDevices";
 	private boolean closeThread;
 	private Handler hMessage;
+	private ListView list;
 	
 	public HardSearchBluetoothDevice(MainActivity context, ListView list, Handler hMessage) {
 		blAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -38,7 +39,7 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 		this.context = context;
 		adapter =  new ArrayAdapter<String>(context,
     			android.R.layout.simple_list_item_1, devicesNames);
-		list.setAdapter(adapter);
+		this.list = list;
 		this.hMessage = hMessage;
 	}
 	
@@ -60,7 +61,7 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 	};
 	
 	// Receiver finished searching after closing searching
-	@SuppressLint("HandlerLeak") private BroadcastReceiver discoveryFinishedReceiver = new BroadcastReceiver() {
+	private BroadcastReceiver discoveryFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
         	context.unregisterReceiver(mReceiver);
@@ -76,6 +77,8 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 	
     //Search stage 1
 	public boolean find(){
+		if(list.getAdapter() == null || !list.getAdapter().equals(adapter))
+			list.setAdapter(adapter);   
 		closeThread = false;
 		devices.clear();
 		devicesNames.clear();
