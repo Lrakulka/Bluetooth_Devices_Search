@@ -1,5 +1,7 @@
 package com.example.bluetooth_devices_search;
 
+
+
 import java.util.ArrayList;
 
 import android.bluetooth.BluetoothAdapter;

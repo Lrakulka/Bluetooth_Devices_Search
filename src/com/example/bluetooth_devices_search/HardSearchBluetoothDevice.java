@@ -13,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -85,6 +86,9 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 		if(list.getAdapter() == null || !list.getAdapter().equals(adapter))
 			list.setAdapter(adapter);   
 		closeThread = false;
+		Message msg = new Message();
+		msg.obj = new String("");
+		hMessage.sendMessage(msg);
 		devices.clear();
 		devicesNames.clear();
 		adapter.notifyDataSetChanged();

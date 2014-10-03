@@ -2,8 +2,13 @@ package com.example.bluetooth_devices_search;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -48,8 +53,31 @@ public class MainActivity extends Activity {
 						" Device Class = " + getDeviceClassName(device.getBluetoothClass().getDeviceClass()));
 			}
 		});
+        //Register receiver for close searching if bluotooth was shutdown
+        this.registerReceiver(bluetoothOff, 
+        		new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
-    
+    	
+	private final BroadcastReceiver bluetoothOff = new BroadcastReceiver() {
+		@Override
+	    public void onReceive(Context context, Intent intent) {
+	        int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 
+	        		BluetoothAdapter.ERROR);
+	        if(state == BluetoothAdapter.STATE_TURNING_OFF || 
+	        		state == BluetoothAdapter.STATE_OFF){
+	        	if(!((Button) findViewById(R.id.button1)).isEnabled())
+	        		onClickNormalSearch(null);
+	        	if(!((Button) findViewById(R.id.button2)).isEnabled())
+	        		onClickHardSearch(null);
+	        }
+	    }
+	};
+	
+	protected void onDestroy(){
+		super.onDestroy();
+		this.unregisterReceiver(bluetoothOff);
+	}
+	
     public void onChecked(View v){
     	if(((CheckBox) findViewById(R.id.checkBox1)).isChecked())
     		Toast.makeText(this, "Prepare to wait 50331368 years", Toast.LENGTH_SHORT).show();
