@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -50,7 +51,8 @@ public class MainActivity extends Activity {
 						+ " Address = " + device.getAddress() + " Bonded sate = " + 
 						getBondSateName(device.getBondState()) + " Major Device Class = " +
 						getMajorDeviceClassName(device.getBluetoothClass().getMajorDeviceClass()) +
-						" Device Class = " + getDeviceClassName(device.getBluetoothClass().getDeviceClass()));
+						" Device Class = " + 
+						getDeviceClassName(device.getBluetoothClass().getDeviceClass()));
 			}
 		});
         //Register receiver for close searching if bluotooth was shutdown
@@ -72,6 +74,16 @@ public class MainActivity extends Activity {
 	        }
 	    }
 	};
+	//Start searching if user chose activated bluetooth
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		 if(resultCode == RESULT_OK)
+		 {
+			 if(requestCode == 2)
+				 onClickNormalSearch(null);
+			 if(requestCode == 3)
+				 onClickHardSearch(null);
+		 }
+	}
 	
 	protected void onDestroy(){
 		super.onDestroy();
@@ -85,17 +97,18 @@ public class MainActivity extends Activity {
     }
     
     public void onClickNormalSearch(View v){
-    	if(!normalSearchState){
-    		if(normalSearch.find()){
+    	if(!normalSearchState && normalSearch.find()){
+    			((TextView) findViewById(R.id.textView2)).setText("");
     	        ((ProgressBar) findViewById(R.id.progressBar1)).setVisibility(View.VISIBLE);
 		    	((Button) findViewById(R.id.button1)).setEnabled(false);
 		    	normalSearchState = true;	    	
 		    	findDevices = normalSearch;
 		    	((Button) findViewById(R.id.button2)).setText(R.string.butt_stop_normal_search);
-    		}
+		    	((CheckBox) findViewById(R.id.checkBox1)).setEnabled(false);
     	}else{
             ((ProgressBar) findViewById(R.id.progressBar1)).setVisibility(View.INVISIBLE);
     		((Button) findViewById(R.id.button1)).setEnabled(true);
+    		((CheckBox) findViewById(R.id.checkBox1)).setEnabled(true);
 	    	normalSearchState = false;
 	    	normalSearch.stop();
 	    	((Button) findViewById(R.id.button2)).setText(R.string.butt_start_normal_search);
@@ -104,14 +117,17 @@ public class MainActivity extends Activity {
     
     public void onClickHardSearch(View v){    	
     	if(!hardSearchState && hardSearch.find()){ 	
+    		((TextView) findViewById(R.id.textView2)).setText("");
 	        ((ProgressBar) findViewById(R.id.progressBar1)).setVisibility(View.VISIBLE);
 	    	((Button) findViewById(R.id.button2)).setEnabled(false);
 	    	hardSearchState = true;	    	
 	    	findDevices = hardSearch;
 	    	((Button) findViewById(R.id.button1)).setText(R.string.butt_stop_hard_search);
+	    	((CheckBox) findViewById(R.id.checkBox1)).setEnabled(false);
     	}else{
             ((ProgressBar) findViewById(R.id.progressBar1)).setVisibility(View.INVISIBLE);
     		((Button) findViewById(R.id.button2)).setEnabled(true);
+    		((CheckBox) findViewById(R.id.checkBox1)).setEnabled(true);
 	    	hardSearchState = false;
 	    	hardSearch.close();
 	    	((Button) findViewById(R.id.button1)).setText(R.string.butt_start_hard_search);

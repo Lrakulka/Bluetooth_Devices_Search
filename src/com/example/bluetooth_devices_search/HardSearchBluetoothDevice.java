@@ -86,15 +86,13 @@ public class HardSearchBluetoothDevice implements FindBluetoothDevices{
 		if(list.getAdapter() == null || !list.getAdapter().equals(adapter))
 			list.setAdapter(adapter);   
 		closeThread = false;
-		Message msg = new Message();
-		msg.obj = new String("");
-		hMessage.sendMessage(msg);
+		hMessage.removeCallbacksAndMessages(null);
 		devices.clear();
 		devicesNames.clear();
 		adapter.notifyDataSetChanged();
 		if (!blAdapter.isEnabled()) {
 		    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		    context.startActivityForResult(enableBtIntent, 2);
+		    context.startActivityForResult(enableBtIntent, 3);
 		}
 		// Register receivers
 		context.registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
